@@ -25,15 +25,17 @@ function winstonLoggerStyle (logger) {
  *
  * @param {string} serviceName name of service
  * @param {object} stream bunyan log writing stream
- * @param {string} loggerLevel log level
+ * @param {object} loggerOptions bunyan logger options
  * @return {object} winston style log interface
  */
-function createLogger (serviceName, stream, loggerLevel = 'trace') {
-  const logger = bunyan.createLogger({
+function createLogger (serviceName, stream, loggerOptions = {}) {
+  const loggerConfig = Object.assign({}, loggerOptions, {
     name: serviceName,
-    level: loggerLevel,
-    stream: stream
+    stream: stream,
+    level: 'trace'
   })
+
+  const logger = bunyan.createLogger(loggerConfig)
 
   // If there is no global logger set, assume the first logger created will be that
   if (!globalLogger) {
@@ -70,7 +72,8 @@ function getLogger () {
   return winstonLoggerStyle(globalLogger)
 }
 
-module.exports = getLogger
-module.exports.createLogger = createLogger
-module.exports.getChildLogger = getChildLogger
-module.exports.getLogger = getLogger
+module.exports = {
+  getLogger,
+  createLogger,
+  getChildLogger
+}
