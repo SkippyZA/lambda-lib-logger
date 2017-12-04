@@ -53,7 +53,7 @@ function createLogger (serviceName, stream, loggerOptions = {}) {
  * @return {object} winston style log interface
  */
 function getChildLogger (logger, obj) {
-  const childLogger = logger.child(obj, true)
+  const childLogger = logger.logger.child(obj, true)
 
   return winstonLoggerStyle(childLogger)
 }
