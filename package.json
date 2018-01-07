@@ -8,6 +8,9 @@
   "scripts": {
     "test": "standard | snazzy"
   },
+  "dependencies": {
+    "lambda-lib": "3.0.0"
+  },
   "peerDependencies": {
     "lambda-lib": "*",
     "bunyan": "*"
