@@ -1,6 +1,6 @@
 const bunyan = require('bunyan')
 const Axios = require('./extras/axios')
-const Bunyan = require('./extras/bunyan')
+const BunyanStream = require('./extras/bunyan-stream')
 const GlobalRequestContext = require('./extras/global-request-context')
 
 // Global logger. Set when first calling createLogger.
@@ -26,22 +26,30 @@ function winstonLoggerStyle (logger) {
 }
 
 /**
- * Create a logger instance
+ * Create a logger instance.
+ *
+ * By default, the logger instance created will be created with the bunyan logger plugin
+ * to defaultly log out the properties available in the global request context and will
+ * log with `info` verbosity.
  *
  * @param {string} serviceName name of service
- * @param {object} stream bunyan log writing stream
  * @param {object} loggerOptions bunyan logger options
  * @return {object} winston style log interface
  */
-function createLogger (serviceName, stream, loggerOptions = {}) {
-  // TODO: Defaultly apply the bunyan stream here...
-  // TODO: Logic here is broken. We are always forcing a log level of `trace`
-  const loggerConfig = Object.assign({}, loggerOptions, {
-    name: serviceName,
-    stream: stream,
-    level: 'trace'
-  })
+function createLogger (serviceName, loggerOptions = {}) {
+  // Defaults are defined, but can be overridden by `loggerOptions`
+  const defaults = {
+    stream: new BunyanStream(),
+    level: 'info'
+  }
 
+  // Head config is static. Any options passed via `loggerOptions` will be ignored
+  // in favour of these
+  const hardConfig = {
+    name: serviceName
+  }
+
+  const loggerConfig = Object.assign(defaults, loggerOptions, hardConfig)
   const logger = bunyan.createLogger(loggerConfig)
 
   // If there is no global logger set, assume the first logger created will be that
@@ -85,7 +93,6 @@ module.exports = {
   getChildLogger,
   plugins: {
     Axios,
-    Bunyan,
     GlobalRequestContext
   }
 }
