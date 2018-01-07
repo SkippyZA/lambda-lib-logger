@@ -7,7 +7,7 @@ const GlobalRequestContext = require('./extras/global-request-context')
 let globalLogger = null
 
 /**
- * Adapter for bunyan logger to expose a winston style interface
+ * Adapter for bunyan logger to expose a winston style interface.
  *
  * @param {bunyan.Logger} logger instance of bunyan logger
  * @return {object} winston style log interface
@@ -32,6 +32,10 @@ function winstonLoggerStyle (logger) {
  * to defaultly log out the properties available in the global request context and will
  * log with `info` verbosity.
  *
+ * If no global logger instance is set, then the first logger instance created with this
+ * method will be set as the global logger. This is required for use with the `getLogger`
+ * method.
+ *
  * @param {string} serviceName name of service
  * @param {object} loggerOptions bunyan logger options
  * @return {object} winston style log interface
@@ -52,7 +56,7 @@ function createLogger (serviceName, loggerOptions = {}) {
   const loggerConfig = Object.assign(defaults, loggerOptions, hardConfig)
   const logger = bunyan.createLogger(loggerConfig)
 
-  // If there is no global logger set, assume the first logger created will be that
+  // If there is no global logger set, assume the first logger created will be set as that
   if (!globalLogger) {
     globalLogger = logger
   }
@@ -61,7 +65,7 @@ function createLogger (serviceName, loggerOptions = {}) {
 }
 
 /**
- * Get a child logger attached to the primary logger
+ * Get a child logger attached to the primary logger.
  *
  * @param {bunyan.Logger} logger instance of bunyan logger
  * @param {object} obj additional propeties for logger
@@ -76,15 +80,20 @@ function getChildLogger (logger, obj) {
 /**
  * Get the global logger.
  *
+ * @param {String=} name name of child loger
  * @throws ReferenceError thrown when no global logger set
  * @return {object} winston style log interface
  */
-function getLogger () {
+function getLogger (name) {
   if (!globalLogger) {
     throw new ReferenceError('No logger has been created. Call `createLogger` to apply a default logger')
   }
 
-  return winstonLoggerStyle(globalLogger)
+  if (name) {
+    return getChildLogger(globalLogger, { loggerName: name })
+  } else {
+    return winstonLoggerStyle(globalLogger)
+  }
 }
 
 module.exports = {
