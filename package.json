@@ -4,15 +4,23 @@
   "author": "Steven Inskip",
   "description": "Interface for bunyan logging in serverless",
   "license": "MIT",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "standard | snazzy"
   },
   "peerDependencies": {
+    "lambda-lib": "*",
     "bunyan": "*"
   },
   "devDependencies": {
+    "chai": "4.1.2",
+    "dirty-chai": "2.0.1",
+    "mocha": "4.1.0",
+    "sinon": "4.1.3",
     "snazzy": "7.0.0",
     "standard": "10.0.3"
+  },
+  "standard": {
+    "env": "mocha"
   }
 }
