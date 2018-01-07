@@ -6,7 +6,8 @@
   "license": "MIT",
   "main": "src/index.js",
   "scripts": {
-    "test": "standard | snazzy"
+    "preTest": "standard | snazzy",
+    "test": "mocha"
   },
   "dependencies": {
     "lambda-lib": "3.0.0"
