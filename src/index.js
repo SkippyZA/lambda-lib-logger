@@ -1,4 +1,7 @@
 const bunyan = require('bunyan')
+const Axios = require('./extras/axios')
+const Bunyan = require('./extras/bunyan')
+const GlobalRequestContext = require('./extras/global-request-context')
 
 // Global logger. Set when first calling createLogger.
 let globalLogger = null
@@ -31,6 +34,8 @@ function winstonLoggerStyle (logger) {
  * @return {object} winston style log interface
  */
 function createLogger (serviceName, stream, loggerOptions = {}) {
+  // TODO: Defaultly apply the bunyan stream here...
+  // TODO: Logic here is broken. We are always forcing a log level of `trace`
   const loggerConfig = Object.assign({}, loggerOptions, {
     name: serviceName,
     stream: stream,
@@ -77,5 +82,10 @@ function getLogger () {
 module.exports = {
   getLogger,
   createLogger,
-  getChildLogger
+  getChildLogger,
+  plugins: {
+    Axios,
+    Bunyan,
+    GlobalRequestContext
+  }
 }
