@@ -12,11 +12,13 @@ let globalLogger = null
 function winstonLoggerStyle (logger) {
   return {
     logger: logger,
-    silly: function (msg, extra) { logger.trace(extra || {}, msg) },
-    debug: function (msg, extra) { logger.debug(extra || {}, msg) },
+    fatal: function (msg, extra) { logger.fatal(extra || {}, msg) },
+    error: function (msg, extra) { logger.error(extra || {}, msg) },
     info: function (msg, extra) { logger.info(extra || {}, msg) },
     warn: function (msg, extra) { logger.warn(extra || {}, msg) },
-    error: function (msg, extra) { logger.error(extra || {}, msg) }
+    debug: function (msg, extra) { logger.debug(extra || {}, msg) },
+    trace: function (msg, extra) { logger.trace(extra || {}, msg) },
+    silly: function (msg, extra) { logger.trace(extra || {}, msg) }
   }
 }
 
