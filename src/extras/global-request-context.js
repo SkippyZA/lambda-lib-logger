@@ -14,9 +14,8 @@ class GlobalRequestContext extends AbstractLambdaPlugin {
 
       if (context && context.awsRequestId) { ctx['awsRequestId'] = context.awsRequestId }
 
-      // api-gateway headers. currently i am just setting these from
-      // the headers property. this will expand to place the appropriate
-      // headers into the global context.
+      // api-gateway headers. currently i am just setting these from the headers property. this will expand to place
+      // the appropriate headers into the global context.
       if (req.headers) {
         for (var header in req.headers) {
           if (header.toLowerCase().startsWith('x-correlation-')) {
