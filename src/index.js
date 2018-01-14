@@ -90,7 +90,7 @@ function getLogger (name) {
   }
 
   if (name) {
-    return getChildLogger(globalLogger, { loggerName: name })
+    return getChildLogger({ logger: globalLogger }, { loggerName: name })
   } else {
     return winstonLoggerStyle(globalLogger)
   }
