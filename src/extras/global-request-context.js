@@ -3,7 +3,7 @@ const { AbstractLambdaPlugin, Enums: { Hooks, LambdaType } } = LambdaLib
 
 class GlobalRequestContext extends AbstractLambdaPlugin {
   constructor () {
-    super('globalRequestContext', LambdaType.DEFAULT)
+    super('globalRequestContext', [ LambdaType.DEFAULT, LambdaType.API_GATEWAY ])
 
     this.addHook(Hooks.PRE_EXECUTE, this.setGlobalContext.bind(this))
   }
