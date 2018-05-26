@@ -1,6 +1,6 @@
 const sinon = require('sinon')
 const chai = require('chai')
-const BunyanStream = require('../../../src/extras/bunyan')
+const BunyanStream = require('../../../src/extras/bunyan-stream')
 
 const expect = chai.expect
 const sandbox = sinon.createSandbox()
