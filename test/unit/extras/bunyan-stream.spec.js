@@ -5,7 +5,7 @@ const BunyanStream = require('../../../src/extras/bunyan-stream')
 const expect = chai.expect
 const sandbox = sinon.createSandbox()
 
-describe('bunyan stream', () => {
+describe.skip('bunyan stream', () => {
   beforeEach(() => {
     global.CONTEXT = undefined
     sandbox.spy(process.stdout, 'write')
