@@ -1,6 +1,9 @@
 const LogLevel = require('./enums/log-levels')
 
+const HOSTNAME = 'aws-lambda'
+const LAMBDA_PID = 0
 const LOG_VERSION = 1
+const DEFAULT_LOG_LEVEL = LogLevel.INFO
 
 /**
  * Lambda Lib Logger
@@ -12,7 +15,7 @@ const LOG_VERSION = 1
  * @throws {TypeError} Thrown when constructed with invalid values
  */
 function Logger (name, options = {}) {
-  const logLevel = LogLevel.levels[options.level || 'info']
+  const logLevel = LogLevel.levels[options.level || DEFAULT_LOG_LEVEL]
 
   if (!name) throw new TypeError('Logger constructed without name')
   if (!logLevel) throw new TypeError(`Invalid log level ('${logLevel}' is not a valid log level')`)
@@ -32,6 +35,11 @@ function Logger (name, options = {}) {
  */
 const _prepareLogObject = obj => JSON.stringify(obj).concat('\n')
 
+function _isLoggable (level) {
+  // Drop out early if not the required log level
+  return this._logLevel <= level
+}
+
 /**
  * Write a log message to the console using `stdout``.
  *
@@ -43,7 +51,7 @@ function _writeLog (logLevel, msg, options) {
   const level = LogLevel.levels[logLevel]
 
   // Drop out early if not the required log level
-  if (this._logLevel > level) return
+  if (!_isLoggable.bind(this)(level)) return
 
   const globalContext = global.CONTEXT || {}
 
@@ -52,8 +60,8 @@ function _writeLog (logLevel, msg, options) {
     ...globalContext,
     ...options,
     v: LOG_VERSION,
-    pid: 0,
-    hostname: 'aws-lambda',
+    pid: LAMBDA_PID,
+    hostname: HOSTNAME,
     name: this._name,
     time: new Date().toISOString(),
     level,
