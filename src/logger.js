@@ -33,7 +33,9 @@ function Logger (name, options = {}) {
  * @param {object} obj log object
  * @return {string} complete log object as a json string
  */
-const _prepareLogObject = obj => JSON.stringify(obj).concat('\n')
+function _prepareLogObject (obj) {
+  return JSON.stringify(obj).concat('\n')
+}
 
 function _isLoggable (level) {
   // Drop out early if not the required log level
@@ -51,7 +53,7 @@ function _writeLog (logLevel, msg, options) {
   const level = LogLevel.levels[logLevel]
 
   // Drop out early if not the required log level
-  if (!_isLoggable.bind(this)(level)) return
+  if (!_isLoggable.call(this, level)) return
 
   const globalContext = global.CONTEXT || {}
 
@@ -81,36 +83,12 @@ function _writeLog (logLevel, msg, options) {
 }
 
 /**
- * Log a fatal message.
+ * Log a trace message.
  *
  * @param {string} msg log message
  * @param {object} options additional log properties
  */
-Logger.prototype.fatal = function (msg, options) { _writeLog.bind(this)(LogLevel.FATAL, msg, options) }
-
-/**
- * Log an error message.
- *
- * @param {string} msg log message
- * @param {object} options additional log properties
- */
-Logger.prototype.error = function (msg, options) { _writeLog.bind(this)(LogLevel.ERROR, msg, options) }
-
-/**
- * Log an info message.
- *
- * @param {string} msg log message
- * @param {object} options additional log properties
- */
-Logger.prototype.info = function (msg, options) { _writeLog.bind(this)(LogLevel.INFO, msg, options) }
-
-/**
- * Log a warning message.
- *
- * @param {string} msg log message
- * @param {object} options additional log properties
- */
-Logger.prototype.warn = function (msg, options) { _writeLog.bind(this)(LogLevel.WARN, msg, options) }
+Logger.prototype.trace = function (msg, options) { _writeLog.call(this, LogLevel.TRACE, msg, options) }
 
 /**
  * Log a debug message.
@@ -118,15 +96,39 @@ Logger.prototype.warn = function (msg, options) { _writeLog.bind(this)(LogLevel.
  * @param {string} msg log message
  * @param {object} options additional log properties
  */
-Logger.prototype.debug = function (msg, options) { _writeLog.bind(this)(LogLevel.DEBUG, msg, options) }
+Logger.prototype.debug = function (msg, options) { _writeLog.call(this, LogLevel.DEBUG, msg, options) }
 
 /**
- * Log a trace message.
+ * Log an info message.
  *
  * @param {string} msg log message
  * @param {object} options additional log properties
  */
-Logger.prototype.trace = function (msg, options) { _writeLog.bind(this)(LogLevel.TRACE, msg, options) }
+Logger.prototype.info = function (msg, options) { _writeLog.call(this, LogLevel.INFO, msg, options) }
+
+/**
+ * Log a warning message.
+ *
+ * @param {string} msg log message
+ * @param {object} options additional log properties
+ */
+Logger.prototype.warn = function (msg, options) { _writeLog.call(this, LogLevel.WARN, msg, options) }
+
+/**
+ * Log an error message.
+ *
+ * @param {string} msg log message
+ * @param {object} options additional log properties
+ */
+Logger.prototype.error = function (msg, options) { _writeLog.call(this, LogLevel.ERROR, msg, options) }
+
+/**
+ * Log a fatal message.
+ *
+ * @param {string} msg log message
+ * @param {object} options additional log properties
+ */
+Logger.prototype.fatal = function (msg, options) { _writeLog.call(this, LogLevel.FATAL, msg, options) }
 
 module.exports = Logger
 module.exports.LogLevel = LogLevel
