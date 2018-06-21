@@ -1,3 +1,4 @@
+const RequestContext = require('./request-context')
 const LogLevel = require('./enums/log-levels')
 
 const HOSTNAME = 'aws-lambda'
@@ -55,7 +56,7 @@ function _writeLog (logLevel, msg, options) {
   // Drop out early if not the required log level
   if (!_isLoggable.call(this, level)) return
 
-  const globalContext = global.CONTEXT || {}
+  const globalContext = RequestContext.getAll()
 
   // Construct the entire log record
   let logRecord = {
