@@ -131,4 +131,3 @@ Logger.prototype.error = function (msg, options) { _writeLog.call(this, LogLevel
 Logger.prototype.fatal = function (msg, options) { _writeLog.call(this, LogLevel.FATAL, msg, options) }
 
 module.exports = Logger
-module.exports.LogLevel = LogLevel
