@@ -1,3 +1,5 @@
+const RequestContext = require('../request-context')
+
 /**
  * Interceptor for axios to include global context properties into each
  * requests headers.
@@ -9,9 +11,11 @@
  * @returns {object} axios config
  */
 function axiosInterceptor (config) {
-  Object.keys(global.CONTEXT || {}).forEach(ctxVar => {
-    if (global.CONTEXT[ctxVar] && !config.headers[ctxVar]) {
-      config.headers[ctxVar] = global.CONTEXT[ctxVar]
+  Object.keys(RequestContext.getAll()).forEach(ctxVar => {
+    const contextVariable = RequestContext.get(ctxVar)
+
+    if (contextVariable && !config.headers[ctxVar]) {
+      config.headers[ctxVar] = contextVariable
     }
   })
 

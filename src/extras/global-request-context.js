@@ -1,4 +1,5 @@
 const LambdaLib = require('lambda-lib')
+const RequestContext = require('../request-context')
 const { AbstractLambdaPlugin, Enums: { Hooks, LambdaType } } = LambdaLib
 
 class GlobalRequestContext extends AbstractLambdaPlugin {
@@ -36,7 +37,7 @@ class GlobalRequestContext extends AbstractLambdaPlugin {
         ctx['x-rrid'] = ctx['x-correlation-id'] || ctx['awsRequestId']
       }
 
-      global.CONTEXT = ctx
+      RequestContext.replaceAllWith(ctx)
       done()
     }
   }
