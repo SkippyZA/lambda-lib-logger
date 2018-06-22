@@ -9,21 +9,57 @@ const DEFAULT_LOG_LEVEL = LogLevel.INFO
 /**
  * Lambda Lib Logger
  *
- * @param {String} name name of logger instance
  * @param {Object} options logger options
+ * @param {String} options.name name of logger instance
  * @param {String} options.level log level (default: 'info'
- * @param {Number} options.sampleDebug percentage of debug messages to log. 0 = disabled (default: 0)
  * @throws {TypeError} Thrown when constructed with invalid values
  */
-function Logger (name, options = {}) {
-  const logLevel = LogLevel.levels[options.level || DEFAULT_LOG_LEVEL]
+function Logger (options = {}, _childOptions) {
+  let parent
 
-  if (!name) throw new TypeError('Logger constructed without name')
-  if (!logLevel) throw new TypeError(`Invalid log level ('${logLevel}' is not a valid log level')`)
+  if (_childOptions !== undefined) {
+    parent = options
+    options = _childOptions
+  }
 
-  this._name = name
-  this._options = options
-  this._logLevel = logLevel
+  this.fields = {}
+
+  // If we have a parent logger passed, then we construct the logger slightly differently by taking
+  // over configuration options and additional fields.
+  if (parent) {
+    if (options.name) throw new TypeError('invalid options.name: child cannot set logger name')
+
+    this.name = parent.name
+    this.level = parent.level
+
+    const parentFieldNames = Object.getOwnPropertyNames(parent.fields)
+    for (let i = 0; i <= parentFieldNames.length; i++) {
+      const name = parentFieldNames[i]
+      this.fields[name] = parent.fields[name]
+    }
+  } else {
+    if (!options.name) throw new TypeError('options.name (string) is required')
+
+    this.name = options.name
+    this.level = options.level || DEFAULT_LOG_LEVEL
+  }
+
+  // Add options to fields map
+  const names = Object.getOwnPropertyNames(options)
+  for (let i = 0; i < names.length; i++) {
+    const name = names[i]
+    this.fields[name] = options[name]
+  }
+}
+
+/**
+ * Create a child logger of this logger instance.
+ *
+ * @param {Object} options logger options
+ * @returns {Logger} child logger instance
+ */
+Logger.prototype.child = function (options) {
+  return new (this.constructor)(this, options)
 }
 
 /**
@@ -38,9 +74,15 @@ function _prepareLogObject (obj) {
   return JSON.stringify(obj).concat('\n')
 }
 
+/**
+ * Check if we are able/allowed to log the message
+ *
+ * @param {number} level log level
+ * @return {boolean} returns true if allowed to log
+ */
 function _isLoggable (level) {
   // Drop out early if not the required log level
-  return this._logLevel <= level
+  return LogLevel.levels[this.level] <= level
 }
 
 /**
@@ -60,12 +102,12 @@ function _writeLog (logLevel, msg, options) {
 
   // Construct the entire log record
   let logRecord = {
-    ...globalContext,
     ...options,
+    ...globalContext,
+    ...this.fields,
     v: LOG_VERSION,
     pid: LAMBDA_PID,
     hostname: HOSTNAME,
-    name: this._name,
     time: new Date().toISOString(),
     level,
     msg
