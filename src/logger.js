@@ -101,10 +101,7 @@ function _writeLog (logLevel, msg, options) {
   const globalContext = RequestContext.getAll()
 
   // Construct the entire log record
-  let logRecord = {
-    ...options,
-    ...globalContext,
-    ...this.fields,
+  const logMessageProperties = {
     v: LOG_VERSION,
     pid: LAMBDA_PID,
     hostname: HOSTNAME,
@@ -112,6 +109,8 @@ function _writeLog (logLevel, msg, options) {
     level,
     msg
   }
+
+  const logRecord = Object.assign({}, options, globalContext, this.fields, logMessageProperties)
 
   // Log x-rrid as rrid and remove the original
   if (logRecord['x-rrid']) {
