@@ -19,17 +19,10 @@ function replaceAllWith (context) {
 /**
  * Set a value on the global context.
  *
- * When setting a key, when it does not start with the CORRELATION_PREFIX, then it is automatically
- * prepended to the key.
- *
  * @param {string} key global context property key
  * @param {*} value value of property key
  */
 function set (key, value) {
-  if (!key.startsWith(CORRELATION_PREFIX)) {
-    key = CORRELATION_PREFIX + key
-  }
-
   if (!global.CONTEXT) {
     global.CONTEXT = {}
   }
@@ -55,11 +48,7 @@ function getAll () {
 function get (key) {
   if (!global.CONTEXT) return
 
-  const searchKey = !key.startsWith(CORRELATION_PREFIX)
-    ? CORRELATION_PREFIX + key
-    : key
-
-  return getAll()[searchKey]
+  return getAll()[key]
 }
 
 module.exports = {
