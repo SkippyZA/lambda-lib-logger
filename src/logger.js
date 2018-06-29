@@ -2,8 +2,8 @@ const RequestContext = require('./request-context')
 const LogLevel = require('./enums/log-levels')
 
 const HOSTNAME = 'aws-lambda'
-const LAMBDA_PID = 0
-const LOG_VERSION = 1
+const LAMBDA_PID = 1
+const LOG_VERSION = 0
 const DEFAULT_LOG_LEVEL = LogLevel.INFO
 
 /**
