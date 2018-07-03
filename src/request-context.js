@@ -1,5 +1,3 @@
-const CORRELATION_PREFIX = 'x-correlation-'
-
 /**
  * Clear the global context and set it to an empty object.
  */
